@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rock Paper Scissors</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+font-family:'Poppins',sans-serif;
+background:linear-gradient(135deg,#020617,#0f172a);
+color:white;
+text-align:center;
+padding-top:30px;
+}
+
+h1{
+font-size:40px;
+text-shadow:0 0 15px #3b82f6;
+}
+
+.scoreboard{
+display:flex;
+justify-content:center;
+gap:80px;
+margin-top:20px;
+font-size:20px;
+}
+
+.score{
+background:#1e293b;
+padding:10px 25px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.4);
+}
+
+.hands{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:70px;
+margin-top:40px;
+font-size:100px;
+}
+
+.vs{
+font-size:35px;
+color:#60a5fa;
+}
+
+.buttons{
+margin-top:40px;
+}
+
+button{
+font-size:18px;
+padding:12px 25px;
+margin:10px;
+border:none;
+border-radius:10px;
+background:#3b82f6;
+color:white;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.1);
+box-shadow:0 0 15px #3b82f6;
+}
+
+.result{
+margin-top:30px;
+font-size:26px;
+min-height:40px;
+}
+
+.win{
+color:#22c55e;
+text-shadow:0 0 10px #22c55e;
+}
+
+.lose{
+color:#ef4444;
+text-shadow:0 0 10px #ef4444;
+}
+
+.draw{
+color:#facc15;
+}
+
+.home{
+margin-top:40px;
+}
+
+.home a{
+color:#60a5fa;
+text-decoration:none;
+}
+
+.shake{
+animation:shake 0.5s infinite;
+}
+
+@keyframes shake{
+0%{transform:translateY(0)}
+50%{transform:translateY(-12px)}
+100%{transform:translateY(0)}
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>✊ Rock Paper Scissors ✂️</h1>
+
+<div class="scoreboard">
+<div class="score">Player: <span id="playerScore">0</span></div>
+<div class="score">Computer: <span id="computerScore">0</span></div>
+</div>
+
+<div class="hands">
+<div id="playerHand">✊</div>
+<div class="vs">VS</div>
+<div id="computerHand">✊</div>
+</div>
+
+<div class="buttons">
+<button onclick="play('rock')">Rock</button>
+<button onclick="play('paper')">Paper</button>
+<button onclick="play('scissors')">Scissors</button>
+</div>
+
+<div class="result" id="result">Choose your move!</div>
+
+<div class="home">
+<a href="index.html">⬅ Back to Game Zone</a>
+</div>
+
+<script>
+
+let playerScore=0;
+let computerScore=0;
+
+const emojis={
+rock:"✊",
+paper:"✋",
+scissors:"✂️"
+};
+
+function play(playerChoice){
+
+let playerHand=document.getElementById("playerHand");
+let computerHand=document.getElementById("computerHand");
+
+playerHand.classList.add("shake");
+computerHand.classList.add("shake");
+
+document.getElementById("result").textContent="Rock... Paper... Scissors...";
+
+setTimeout(()=>{
+
+playerHand.classList.remove("shake");
+computerHand.classList.remove("shake");
+
+const choices=["rock","paper","scissors"];
+const computerChoice=choices[Math.floor(Math.random()*3)];
+
+playerHand.textContent=emojis[playerChoice];
+computerHand.textContent=emojis[computerChoice];
+
+let result="";
+let resultClass="";
+
+if(playerChoice===computerChoice){
+result="Draw!";
+resultClass="draw";
+}
+else if(
+(playerChoice==="rock" && computerChoice==="scissors") ||
+(playerChoice==="paper" && computerChoice==="rock") ||
+(playerChoice==="scissors" && computerChoice==="paper")
+){
+result="You Win! 🎉";
+playerScore++;
+document.getElementById("playerScore").textContent=playerScore;
+resultClass="win";
+}
+else{
+result="Computer Wins!";
+computerScore++;
+document.getElementById("computerScore").textContent=computerScore;
+resultClass="lose";
+}
+
+let resultDiv=document.getElementById("result");
+resultDiv.textContent=result;
+resultDiv.className="result "+resultClass;
+
+},900);
+
+}
+
+</script>
+
+</body>
+</html>
+

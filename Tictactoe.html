@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Tic Tac Toe</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+font-family:'Poppins',sans-serif;
+background:linear-gradient(135deg,#020617,#0f172a);
+color:white;
+text-align:center;
+padding-top:40px;
+}
+
+h1{
+font-size:40px;
+text-shadow:0 0 10px #3b82f6;
+}
+
+.mode-select{
+margin-top:20px;
+}
+
+button{
+padding:10px 20px;
+margin:10px;
+border:none;
+border-radius:8px;
+background:#3b82f6;
+color:white;
+cursor:pointer;
+font-size:16px;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.1);
+box-shadow:0 0 15px #3b82f6;
+}
+
+.board{
+display:grid;
+grid-template-columns:repeat(3,110px);
+grid-template-rows:repeat(3,110px);
+gap:10px;
+justify-content:center;
+margin-top:40px;
+display:none;
+}
+
+.cell{
+background:#1e293b;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:50px;
+cursor:pointer;
+border-radius:10px;
+transition:0.3s;
+}
+
+.cell:hover{
+background:#334155;
+box-shadow:0 0 12px #3b82f6;
+}
+
+.status{
+margin-top:20px;
+font-size:20px;
+}
+
+.home{
+margin-top:30px;
+}
+
+.home a{
+color:#60a5fa;
+text-decoration:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>❌ Tic Tac Toe ⭕</h1>
+
+<div class="mode-select">
+<button onclick="startGame('friend')">Play with Friend</button>
+<button onclick="startGame('computer')">Play with Computer</button>
+</div>
+
+<div class="board" id="board">
+
+<div class="cell" onclick="move(this,0)"></div>
+<div class="cell" onclick="move(this,1)"></div>
+<div class="cell" onclick="move(this,2)"></div>
+
+<div class="cell" onclick="move(this,3)"></div>
+<div class="cell" onclick="move(this,4)"></div>
+<div class="cell" onclick="move(this,5)"></div>
+
+<div class="cell" onclick="move(this,6)"></div>
+<div class="cell" onclick="move(this,7)"></div>
+<div class="cell" onclick="move(this,8)"></div>
+
+</div>
+
+<div class="status" id="status"></div>
+
+<button onclick="restart()">Restart</button>
+
+<div class="home">
+<a href="index.html">⬅ Back to Game Zone</a>
+</div>
+<script>
+
+let board=["","","","","","","","",""];
+let currentPlayer="X";
+let gameActive=false;
+let mode="friend";
+
+let player1Name = "Player 1";
+let player2Name = "Player 2";
+
+const winPatterns=[
+[0,1,2],[3,4,5],[6,7,8],
+[0,3,6],[1,4,7],[2,5,8],
+[0,4,8],[2,4,6]
+];
+
+function startGame(selectedMode){
+
+mode=selectedMode;
+gameActive=true;
+
+// ASK NAMES
+if(mode==="friend"){
+player1Name = prompt("Enter Player 1 Name:") || "Player 1";
+player2Name = prompt("Enter Player 2 Name:") || "Player 2";
+}
+else{
+player1Name="You";
+player2Name="Computer";
+}
+
+document.getElementById("board").style.display="grid";
+document.getElementById("status").textContent=player1Name+"'s Turn";
+
+}
+
+function move(cell,index){
+
+if(board[index]!=="" || !gameActive) return;
+
+board[index]=currentPlayer;
+cell.textContent=currentPlayer;
+
+checkWinner();
+
+if(!gameActive) return;
+
+if(mode==="computer" && currentPlayer==="X"){
+
+currentPlayer="O";
+document.getElementById("status").textContent="Computer Thinking...";
+
+setTimeout(computerMove,500);
+
+}
+else{
+
+currentPlayer=currentPlayer==="X"?"O":"X";
+
+let currentName = currentPlayer==="X" ? player1Name : player2Name;
+document.getElementById("status").textContent=currentName+"'s Turn";
+
+}
+
+}
+
+function computerMove(){
+
+let emptyIndexes=board
+.map((val,i)=>val===""?i:null)
+.filter(v=>v!==null);
+
+let randomIndex=emptyIndexes[Math.floor(Math.random()*emptyIndexes.length)];
+
+board[randomIndex]="O";
+
+document.querySelectorAll(".cell")[randomIndex].textContent="O";
+
+checkWinner();
+
+currentPlayer="X";
+
+if(gameActive)
+document.getElementById("status").textContent=player1Name+"'s Turn";
+
+}
+
+function checkWinner(){
+
+for(let pattern of winPatterns){
+
+let a=board[pattern[0]];
+let b=board[pattern[1]];
+let c=board[pattern[2]];
+
+if(a && a===b && b===c){
+
+let winnerName;
+
+if(mode==="computer" && a==="O"){
+winnerName="Computer";
+}
+else{
+winnerName = a==="X" ? player1Name : player2Name;
+}
+
+document.getElementById("status").textContent=winnerName+" Wins! 🎉";
+
+gameActive=false;
+return;
+
+}
+
+}
+
+if(!board.includes("")){
+document.getElementById("status").textContent="It's a Draw!";
+gameActive=false;
+}
+
+}
+
+function restart(){
+
+board=["","","","","","","","",""];
+currentPlayer="X";
+gameActive=true;
+
+document.querySelectorAll(".cell").forEach(cell=>cell.textContent="");
+
+document.getElementById("status").textContent=player1Name+"'s Turn";
+
+}
+
+</script>
+
+</body>
+</html>

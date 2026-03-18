@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Hangman Game</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0f172a;
+color:white;
+text-align:center;
+}
+
+h1{ margin-top:20px; }
+
+input{
+padding:10px;
+margin:10px;
+font-size:16px;
+}
+
+button{
+padding:10px 20px;
+margin:10px;
+cursor:pointer;
+}
+
+#game{ display:none; }
+
+#word{
+font-size:30px;
+letter-spacing:8px;
+margin:20px;
+}
+
+#letters button{
+margin:5px;
+padding:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Hangman Game</h1>
+
+<!-- SETUP SCREEN -->
+<div id="setup">
+
+<input type="text" id="p1" placeholder="Player 1 Name (Setter)">
+<input type="text" id="p2" placeholder="Player 2 Name (Guesser)">
+<br>
+
+<input type="password" id="wordInput" placeholder="Enter Secret Word">
+<br>
+
+<button onclick="startGame()">Start Game</button>
+
+</div>
+
+<!-- GAME SCREEN -->
+<div id="game">
+
+<h3 id="players"></h3>
+<h3 id="turn"></h3>
+<h3 id="lives"></h3>
+
+<div id="word"></div>
+<div id="letters"></div>
+<div id="message"></div>
+
+</div>
+
+<script>
+
+let player1Name, player2Name, chosenWord;
+let guessed = [];
+let wrong = 0;
+let maxLives = 6;
+
+// START GAME
+function startGame(){
+
+player1Name = document.getElementById("p1").value || "Player 1";
+player2Name = document.getElementById("p2").value || "Player 2";
+chosenWord = document.getElementById("wordInput").value.toLowerCase();
+
+if(chosenWord === ""){
+alert("Enter a word!");
+return;
+}
+
+// SWITCH SCREENS
+document.getElementById("setup").style.display="none";
+document.getElementById("game").style.display="block";
+
+// SHOW INFO
+document.getElementById("players").innerText =
+player1Name + " vs " + player2Name;
+
+document.getElementById("turn").innerText =
+player2Name + "'s Turn";
+
+updateLives();
+createKeyboard();
+displayWord();
+
+}
+
+// DISPLAY WORD
+function displayWord(){
+
+let display="";
+
+for(let letter of chosenWord){
+if(guessed.includes(letter)){
+display += letter + " ";
+}else{
+display += "_ ";
+}
+}
+
+document.getElementById("word").innerText = display;
+
+// WIN
+if(!display.includes("_")){
+document.getElementById("message").innerText =
+"🎉 " + player2Name + " Wins!";
+disableAll();
+}
+
+}
+
+// LIVES
+function updateLives(){
+document.getElementById("lives").innerText =
+"Lives Left: " + (maxLives - wrong);
+}
+
+// KEYBOARD
+function createKeyboard(){
+
+let lettersDiv=document.getElementById("letters");
+
+for(let i=97;i<=122;i++){
+
+let letter = String.fromCharCode(i);
+
+let btn=document.createElement("button");
+btn.innerText=letter;
+
+btn.onclick=function(){
+guess(letter,btn);
+};
+
+lettersDiv.appendChild(btn);
+
+}
+
+}
+
+// GUESS
+function guess(letter,btn){
+
+btn.disabled=true;
+
+if(chosenWord.includes(letter)){
+guessed.push(letter);
+document.getElementById("message").innerText="Correct!";
+}
+else{
+wrong++;
+document.getElementById("message").innerText="Wrong!";
+}
+
+// LOSE
+if(wrong === maxLives){
+document.getElementById("message").innerText =
+"Game Over! Word was: " + chosenWord;
+disableAll();
+return;
+}
+
+updateLives();
+displayWord();
+
+}
+
+// DISABLE
+function disableAll(){
+document.querySelectorAll("#letters button")
+.forEach(b=>b.disabled=true);
+}
+
+</script>
+
+</body>
+</html>

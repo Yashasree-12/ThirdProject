@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Snake & Ladders</title>
+
+<style>
+body{
+font-family:Segoe UI, Arial;
+background:#0f172a;
+color:white;
+text-align:center;
+margin:0;
+}
+
+h1{
+margin:10px;
+}
+
+.turn{
+font-size:26px;
+font-weight:600;
+margin-bottom:10px;
+color:#60a5fa;
+}
+
+/* 🎲 DICE STYLE */
+#dice{
+margin-top:12px;
+font-size:28px;
+font-weight:700;
+color:#facc15;
+text-shadow:0 0 10px #facc15;
+}
+
+.board{
+display:grid;
+grid-template-columns:repeat(10,60px);
+gap:3px;
+justify-content:center;
+}
+
+.cell{
+width:60px;
+height:60px;
+border-radius:6px;
+background:#1e293b;
+position:relative;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.number{
+position:absolute;
+top:4px;
+left:6px;
+font-size:16px;
+font-weight:700;
+color:#e2e8f0;
+}
+
+.snakeMark{
+position:absolute;
+bottom:4px;
+right:6px;
+font-size:16px;
+color:#ef4444;
+}
+
+.ladderMark{
+position:absolute;
+bottom:4px;
+right:6px;
+font-size:16px;
+color:#22c55e;
+}
+
+.token1{
+width:18px;
+height:18px;
+background:#3b82f6;
+border-radius:50%;
+}
+
+.token2{
+width:18px;
+height:18px;
+background:#f472b6;
+border-radius:50%;
+}
+
+button{
+margin-top:15px;
+padding:10px 24px;
+border:none;
+border-radius:8px;
+background:#2563eb;
+color:white;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Snake & Ladders 🐍🪜</h1>
+
+<div class="turn" id="turn">Game Starting...</div>
+
+<div class="board" id="board"></div>
+
+<button onclick="rollDice()">🎲 Roll Dice</button>
+
+<div id="dice">🎲 Roll the Dice!</div>
+
+<script>
+
+// 🎯 PLAYER NAMES
+let player1Name = prompt("Enter Player 1 Name:") || "Player 1";
+let player2Name = prompt("Enter Player 2 Name:") || "Player 2";
+
+document.getElementById("turn").innerText = player1Name + "'s Turn";
+
+// GAME DATA
+const snakes={16:6,48:30,62:19,88:24,95:56,97:78};
+const ladders={2:38,7:14,8:31,15:26,21:42,28:84,36:44,51:67,71:91,78:98};
+
+const board=document.getElementById("board");
+
+// CREATE BOARD
+for(let i=100;i>=1;i--){
+
+let cell=document.createElement("div");
+cell.className="cell";
+cell.id="cell"+i;
+
+let number=document.createElement("div");
+number.className="number";
+number.innerText=i;
+
+cell.appendChild(number);
+
+if(snakes[i]){
+let s=document.createElement("div");
+s.className="snakeMark";
+s.innerText="🐍";
+cell.appendChild(s);
+}
+
+if(ladders[i]){
+let l=document.createElement("div");
+l.className="ladderMark";
+l.innerText="🪜";
+cell.appendChild(l);
+}
+
+board.appendChild(cell);
+}
+
+// POSITIONS
+let p1=1;
+let p2=1;
+let turn=1;
+
+function updateBoard(){
+
+document.querySelectorAll(".token1,.token2").forEach(t=>t.remove());
+
+let t1=document.createElement("div");
+t1.className="token1";
+
+let t2=document.createElement("div");
+t2.className="token2";
+
+document.getElementById("cell"+p1).appendChild(t1);
+document.getElementById("cell"+p2).appendChild(t2);
+}
+
+updateBoard();
+
+function rollDice(){
+
+let dice=Math.floor(Math.random()*6)+1;
+
+// 🎲 SHOW ROLLING TEXT
+let diceDiv=document.getElementById("dice");
+diceDiv.innerText="🎲 Rolling...";
+
+setTimeout(()=>{
+
+let currentName = turn===1 ? player1Name : player2Name;
+diceDiv.innerText="🎲 " + currentName + " rolled: " + dice;
+
+// PLAYER 1 TURN
+if(turn===1){
+
+p1+=dice;
+
+if(snakes[p1]) p1=snakes[p1];
+if(ladders[p1]) p1=ladders[p1];
+
+if(p1>=100){
+alert("🏆 " + player1Name + " Wins!");
+location.reload();
+}
+
+turn=2;
+document.getElementById("turn").innerText=player2Name + "'s Turn";
+
+}
+// PLAYER 2 TURN
+else{
+
+p2+=dice;
+
+if(snakes[p2]) p2=snakes[p2];
+if(ladders[p2]) p2=ladders[p2];
+
+if(p2>=100){
+alert("🏆 " + player2Name + " Wins!");
+location.reload();
+}
+
+turn=1;
+document.getElementById("turn").innerText=player1Name + "'s Turn";
+
+}
+
+updateBoard();
+
+},500);
+
+}
+
+</script>
+
+</body>
+</html>

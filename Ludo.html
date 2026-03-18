@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ludo Game</title>
+
+<style>
+body{
+font-family:Arial;
+background:#020617;
+color:white;
+text-align:center;
+}
+
+h1{ margin-top:15px; }
+
+input{
+padding:10px;
+margin:8px;
+font-size:16px;
+border-radius:6px;
+border:none;
+}
+
+button{
+padding:10px 20px;
+margin:10px;
+cursor:pointer;
+border:none;
+border-radius:8px;
+background:#2563eb;
+color:white;
+font-weight:600;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+#game{ display:none; }
+
+.board{
+display:grid;
+grid-template-columns:repeat(10,55px);
+gap:4px;
+justify-content:center;
+margin-top:20px;
+}
+
+.cell{
+width:55px;
+height:55px;
+border-radius:6px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:12px;
+font-weight:bold;
+position:relative;
+}
+
+.red{ background:#ef4444; }
+.green{ background:#22c55e; }
+.path{ background:#1e293b; }
+
+.token1{
+width:16px;
+height:16px;
+background:white;
+border-radius:50%;
+border:2px solid red;
+position:absolute;
+bottom:5px;
+left:5px;
+}
+
+.token2{
+width:16px;
+height:16px;
+background:white;
+border-radius:50%;
+border:2px solid lime;
+position:absolute;
+top:5px;
+right:5px;
+}
+
+#dice{
+font-size:24px;
+margin-top:10px;
+color:#facc15;
+font-weight:700;
+}
+
+#turn{
+font-size:20px;
+margin-top:10px;
+color:#60a5fa;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎲 Ludo Game</h1>
+
+<div id="setup">
+<input type="text" id="p1" placeholder="Player 1 Name">
+<input type="text" id="p2" placeholder="Player 2 Name"><br>
+<button onclick="startGame()">Start Game</button>
+</div>
+
+<div id="game">
+
+<h3 id="players"></h3>
+<div id="turn"></div>
+
+<div class="board" id="board"></div>
+
+<button onclick="rollDice()">Roll Dice</button>
+
+<div id="dice">🎲 Roll the Dice!</div>
+
+</div>
+
+<script>
+
+let player1Name, player2Name;
+
+let p1=0;
+let p2=0;
+
+let turn=1;
+
+function startGame(){
+
+player1Name = document.getElementById("p1").value || "Player 1";
+player2Name = document.getElementById("p2").value || "Player 2";
+
+document.getElementById("setup").style.display="none";
+document.getElementById("game").style.display="block";
+
+document.getElementById("players").innerText =
+player1Name + " (Red) vs " + player2Name + " (Green)";
+
+document.getElementById("turn").innerText =
+player1Name + "'s Turn";
+
+createBoard();
+updateBoard();
+}
+
+function createBoard(){
+
+let board=document.getElementById("board");
+
+for(let i=100;i>=1;i--){
+
+let cell=document.createElement("div");
+cell.className="cell path";
+cell.id="cell"+i;
+
+if(i==100){
+cell.innerText="🏠";
+}else{
+cell.innerText=i;
+}
+
+if(i<=20) cell.classList.add("red");
+if(i>=80) cell.classList.add("green");
+
+board.appendChild(cell);
+}
+}
+
+function updateBoard(){
+
+document.querySelectorAll(".token1,.token2")
+.forEach(t=>t.remove());
+
+if(p1>0){
+let t1=document.createElement("div");
+t1.className="token1";
+document.getElementById("cell"+p1).appendChild(t1);
+}
+
+if(p2>0){
+let t2=document.createElement("div");
+t2.className="token2";
+document.getElementById("cell"+p2).appendChild(t2);
+}
+}
+
+function rollDice(){
+
+let dice=Math.floor(Math.random()*6)+1;
+
+let currentName = turn===1 ? player1Name : player2Name;
+
+let diceDiv=document.getElementById("dice");
+diceDiv.innerText="🎲 Rolling...";
+
+setTimeout(()=>{
+
+diceDiv.innerText="🎲 " + currentName + " rolled: " + dice;
+
+if(turn===1){
+
+if(p1===0){
+if(dice===6){
+p1=1;
+}else{
+diceDiv.innerText += " (Need 6 to start)";
+turn=2;
+document.getElementById("turn").innerText =
+player2Name + "'s Turn";
+updateBoard();
+return;
+}
+}else{
+if(p1 + dice <= 100){
+p1 += dice;
+}
+}
+
+// 💥 KILL
+if(p1 === p2 && p2 !== 0){
+p2 = 0;
+diceDiv.innerText += " 💥 " + player2Name + " sent home!";
+}
+
+if(p1===100){
+alert(player1Name + " Wins!");
+location.reload();
+}
+
+if(dice!==6){
+turn=2;
+document.getElementById("turn").innerText =
+player2Name + "'s Turn";
+}
+
+}
+
+else{
+
+if(p2===0){
+if(dice===6){
+p2=1;
+}else{
+diceDiv.innerText += " (Need 6 to start)";
+turn=1;
+document.getElementById("turn").innerText =
+player1Name + "'s Turn";
+updateBoard();
+return;
+}
+}else{
+if(p2 + dice <= 100){
+p2 += dice;
+}
+}
+
+// 💥 KILL
+if(p2 === p1 && p1 !== 0){
+p1 = 0;
+diceDiv.innerText += " 💥 " + player1Name + " sent home!";
+}
+
+if(p2===100){
+alert(player2Name + " Wins!");
+location.reload();
+}
+
+if(dice!==6){
+turn=1;
+document.getElementById("turn").innerText =
+player1Name + "'s Turn";
+}
+
+}
+
+updateBoard();
+
+},500);
+}
+
+</script>
+
+</body>
+</html>

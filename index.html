@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FunOrbit</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#0f172a,#020617);
+  color:white;
+  min-height:100vh;
+  transition:0.4s;
+}
+
+.navbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 30px;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(10px);
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+
+.logo{
+  font-size:22px;
+  font-weight:600;
+}
+
+.nav-links{
+  list-style:none;
+  display:flex;
+  gap:25px;
+  margin:0;
+}
+
+.nav-links a{
+  text-decoration:none;
+  color:white;
+  font-size:15px;
+  transition:0.3s;
+}
+
+.nav-links a:hover{
+  color:#3b82f6;
+}
+
+.nav-right{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.search-box input{
+  padding:6px 10px;
+  border-radius:8px;
+  border:none;
+  outline:none;
+  font-size:14px;
+  background:#1e293b;
+  color:white;
+  width:140px;
+  transition:0.3s;
+}
+
+.search-box input:focus{
+  width:180px;
+  background:#111827;
+}
+
+.theme-btn{
+  border:none;
+  background:#3b82f6;
+  color:white;
+  padding:6px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.menu-toggle{
+  display:none;
+  font-size:24px;
+  cursor:pointer;
+}
+
+@media(max-width:768px){
+  .search-box{
+    display:none;
+  }
+  .nav-links{
+    position:absolute;
+    top:70px;
+    right:0;
+    background:#020617;
+    width:200px;
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
+    padding:20px;
+    display:none;
+  }
+  .nav-links.active{
+    display:flex;
+  }
+  .menu-toggle{
+    display:block;
+  }
+}
+
+body.light{ background:#f5f7fb; color:#111; } 
+body.light header{ color:#111; text-shadow:none; } 
+body.light .card{ box-shadow:0 10px 20px rgba(0,0,0,0.1); color: white; } 
+body.light .card::after{ background:linear-gradient(to top, rgba(15, 2, 2, 0.85), transparent); } 
+body.light .card:hover{ box-shadow:0 20px 30px rgba(59,130,246,0.3); } 
+body.light .rps{ background-image:url("rockpaper.jpg"); } 
+body.light .ttt{ background-image:url("tictacdark.png"); } 
+body.light .memory{ background-image:url("mg1.png"); } 
+body.light .snake{ background-image:url("snakedark.png"); } 
+body.light .ludo{ background-image:url("lkb.jpg"); } 
+body.light .hangman{ background-image:url("hangman.jpg"); }
+
+.hero{
+  height:60vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  background:radial-gradient(circle at center,#1e293b,#020617);
+}
+
+.hero h1{
+  font-size:48px;
+  margin-bottom:10px;
+}
+
+.hero p{
+  opacity:0.8;
+  margin-bottom:20px;
+}
+
+.btn-main{
+  padding:6px 18px;
+  font-size:14px;
+  border-radius:20px;
+  background:#3b82f6;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+  text-decoration:none;
+  display:inline-block;
+  box-shadow:0 0 10px rgba(59,130,246,0.5);
+}
+
+.btn-main:hover{
+  background:#2563eb;
+  transform:scale(1.05);
+}
+
+.carousel{
+  width:90%;
+  margin:40px auto;
+  border-radius:20px;
+  overflow:hidden;
+  height:500px;
+}
+
+.carousel-item{
+  height:500px;
+  position:relative;
+}
+
+.carousel-item img{
+  height:100%;
+  object-fit:cover;
+  filter:brightness(0.7);
+}
+
+.carousel-caption{
+  bottom:30px;
+}
+
+.game-container {
+  display: grid;
+  gap: 30px;
+  padding: 40px;
+  justify-items: center;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.card {
+  width: 100%;
+  max-width: 260px;
+  height: 190px;
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  transition: 0.4s;
+}
+.card::before{
+content:"";
+position:absolute;
+top:0;
+left:-100%;
+width:100%;
+height:100%;
+background:linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);
+transition:0.6s;
+z-index:1;
+}
+
+.card:hover::before{
+left:100%;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60%;
+  background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+}
+
+.card h2,
+.card a {
+  position: relative;
+  z-index: 2;
+  padding: 0 15px;
+}
+
+.card h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.card a {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 20px 40px rgba(59,130,246,0.7);
+}
+
+.rps{ background-image:url("rpsl.png"); }
+.ttt{ background-image:url("ticlight.png"); }
+.memory{ background-image:url("mg2.png"); }
+.snake{ background-image:url("sll.png"); }
+.ludo{ background-image:url("lkl.png"); }
+.hangman{ background-image:url("hanglight.png"); }
+
+@media (max-width: 1024px) {
+  .game-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    padding: 30px;
+  }
+  .card { height: 170px; }
+}
+
+@media (max-width: 768px) {
+  .game-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+  .card { height: 160px; }
+}
+
+footer{
+  text-align:center;
+  padding:20px;
+  color:#aaa;
+}
+
+h1{
+  text-align:center;
+  padding:10px;
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+  <div class="logo">🎮 FunOrbit</div>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#games">Games</a></li>
+    <li><a href="feature.html">Features</a></li>
+    <li><a href="aboutus.html">About Us</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="search-box">
+      <input type="text" placeholder="Search games..." id="searchInput">
+    </div>
+    <button onclick="toggleTheme()" class="theme-btn">🌙</button>
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+  </div>
+</nav>
+
+<br>
+<h1>Welcome to the most amazing platform of all time</h1>
+
+<div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="ca1.png" class="d-block w-100">
+      <div class="carousel-caption">
+        <h3>⚡ Fast Gameplay</h3>
+        <p>Smooth and responsive experience</p>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="ca2.png" class="d-block w-100">
+      <div class="carousel-caption">
+        <h3>🧠 Smart AI</h3>
+        <p>Challenge intelligent bots</p>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="ca3.png" class="d-block w-100">
+      <div class="carousel-caption">
+        <h3>🌐 Multiplayer</h3>
+        <p>Play with friends (Coming Soon)</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+<h1>Game Zone</h1>
+
+<div id="games" class="game-container">
+  <div class="card rps">
+    <a href="rockpaperscissors.html" class="btn-main">Play</a>
+  </div>
+
+  <div class="card ttt">
+    <a href="tictactoe.html" class="btn-main">Play</a>
+  </div>
+
+  <div class="card memory">
+    <a href="memorygame.html" class="btn-main">Play</a>
+  </div>
+
+  <div class="card snake">
+    <a href="snakeandladders.html" class="btn-main">Play</a>
+  </div>
+
+  <div class="card ludo">
+    <a href="ludo.html" class="btn-main">Play</a>
+  </div>
+
+  <div class="card hangman">
+    <a href="hangman.html" class="btn-main">Play</a>
+  </div>
+</div>
+
+<footer>
+🚀 Built with passion — FunOrbit
+</footer>
+
+<script>
+function toggleTheme(){
+  document.body.classList.toggle("light");
+  let btn = document.querySelector(".theme-btn");
+  btn.innerText = document.body.classList.contains("light") ? "🌞" : "🌙";
+}
+
+function toggleMenu(){
+  document.querySelector(".nav-links").classList.toggle("active");
+}
+
+document.getElementById("searchInput").addEventListener("keyup", function(){
+  let value = this.value.toLowerCase();
+  let cards = document.querySelectorAll(".card");
+  cards.forEach(card => {
+    let title = card.querySelector("h2").innerText.toLowerCase();
+    card.style.display = title.includes(value) ? "flex" : "none";
+  });
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
